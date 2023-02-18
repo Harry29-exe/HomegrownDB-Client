@@ -20,7 +20,7 @@ const TokenView: Component<{token: Token}> = props => {
         case TokenType.KeyWord:
             return <span class="text-green-500">{props.token.value}</span>
         default:
-            return <span>{props.token.value}</span>
+            return <span class="text-white">{props.token.value}</span>
     }
 }
 

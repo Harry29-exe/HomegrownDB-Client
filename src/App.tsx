@@ -3,10 +3,13 @@ import type { Component } from 'solid-js';
 import logo from './logo.svg';
 import styles from './App.module.css';
 import {Editor} from "./layout/editor/Editor";
+import {EditorWindow} from "./layout/EditorWindow";
 
 const App: Component = () => {
   return (
-      <Editor initialContent={"fred \n and willy"}/>
+      <div class="w-[100vw] h-[100vh]">
+        <EditorWindow/>
+      </div>
     // <div class={styles.App}>
     //   <header class={styles.header}>
     //     <img src={logo} class={styles.logo} alt="logo" />
