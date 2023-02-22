@@ -1,8 +1,9 @@
-import {Component, ComponentProps, createSignal} from "solid-js";
+import {Component, ComponentProps, createSignal, Show} from "solid-js";
 import {Token} from "./syntax/token/Token";
 import {SyntaxService} from "./syntax/SyntaxService";
 import {TokensView} from "./TokensView";
 import {DBClient} from "../../client/DBClient";
+import {ResultTable} from "../results/ResultTable";
 
 export interface EditorProps {
     initialContent: string
@@ -24,6 +25,13 @@ export const Editor: Component<EditorProps> = (props: EditorProps) => {
         dbClient.executeQuery(query())
             .then(results => setResult(results));
     }
+    const tableResults = () => {
+        return results().map(obj => Object.values(obj))
+    }
+    const tableHeaders = () => {
+        let firstRow = results()[0];
+        return Object.keys(firstRow);
+    }
 
     return <>
         <div class="w-full h-[300px] relative bg-slate-800 text-white">
@@ -42,7 +50,9 @@ export const Editor: Component<EditorProps> = (props: EditorProps) => {
             >Send</button>
         </div>
 
-        <div>{results()}</div>
+        <Show when={results().length > 0} keyed>
+            <ResultTable Header={tableHeaders()} Rows={tableResults()}/>
+        </Show>
     </>
 }
 
