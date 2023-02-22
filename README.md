@@ -2,8 +2,8 @@
 This is simple client for my relational database that 
 exist in other repository.
 
-## Capabilisties as of 22.02.23
-![img_2.png](img_2.png)
+## Capabilities as of 22.02.23
+![img.png](readme-resoureces/img.png)
 
 # Solid Readme
 ## Usage
