@@ -1,3 +1,11 @@
+# HomegrownDB Client
+This is simple client for my relational database that 
+exist in other repository.
+
+## Capabilisties as of 22.02.23
+![img_2.png](img_2.png)
+
+# Solid Readme
 ## Usage
 
 Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
