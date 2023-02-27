@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/HomegrownDB-Client.iml" filepath="$PROJECT_DIR$/.idea/HomegrownDB-Client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HomegrownDB-WebApp/HomegrownDB-WebApp.iml" filepath="$PROJECT_DIR$/HomegrownDB-WebApp/HomegrownDB-WebApp.iml" />
     </modules>
   </component>
 </project>
