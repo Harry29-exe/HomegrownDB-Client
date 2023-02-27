@@ -1,4 +1,4 @@
-import {Component, ComponentProps, createSignal, Show} from "solid-js";
+import {Component, ComponentProps, createEffect, createSignal, Show} from "solid-js";
 import {Token} from "./syntax/token/Token";
 import {SyntaxService} from "./syntax/SyntaxService";
 import {TokensView} from "./TokensView";
@@ -14,11 +14,12 @@ export const Editor: Component<EditorProps> = (props: EditorProps) => {
     const syntaxService = new SyntaxService();
 
     const [query, setQuery] = createSignal<string>(props.initialContent)
-    const tokens = () => syntaxService.tokenize(query());
+    createEffect(() => {
+        setQuery(props.initialContent);
+    })
 
-    const update = (content: string) => {
-        setQuery(content);
-    }
+    const tokens = () => syntaxService.tokenize(query());
+    const update = (content: string) => setQuery(content);
 
     const [results, setResult] = createSignal<any[]>([]);
     const executeQuery = () => {

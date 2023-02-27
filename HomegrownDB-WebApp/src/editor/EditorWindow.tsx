@@ -1,5 +1,5 @@
 import {Accessor, Component, createSignal, onMount, Setter, Signal} from "solid-js";
-import {Editor} from "./editor/Editor";
+import {Editor} from "./text-editor/Editor";
 import {QueriesTree} from "./queries/QueriesTree";
 import {VerticalDivider} from "../components/VerticalDivider";
 import {QueriesApi, QueryDTO} from "../client/QueriesApi";
