@@ -1,13 +1,16 @@
-import {Component, For} from "solid-js";
+import {Component, createSignal, For, onMount} from "solid-js";
+import {QueryDTO} from "../../client/QueriesApi";
 
 export interface QueriesTreeProps {
-    queries: {queryName: string, query: string}[]
+    queries: QueryDTO[];
+    onQuerySelect: (query: QueryDTO) => any
 }
 
 export const QueriesTree: Component<QueriesTreeProps> = props => {
     return <ul>
         <For each={props.queries}>{(query) =>
-            <li>{query.queryName}</li>
+            <li class="pr-2 py-1.5"
+            >{query.name}</li>
         }
         </For>
     </ul>
