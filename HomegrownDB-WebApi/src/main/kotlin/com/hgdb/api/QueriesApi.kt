@@ -35,7 +35,11 @@ class QueriesApi(
     suspend inline fun getAllQueries(ctx: RequestCtx) {
         val result = queryService.readAll()
         if (result.isSuccess) {
-            ctx.call.respondText(Json.encodeToString(result.getOrThrow()), ContentType.Application.Json, HttpStatusCode.OK)
+            ctx.call.respondText(
+                Json.encodeToString(result.getOrThrow()),
+                ContentType.Application.Json,
+                HttpStatusCode.OK
+            )
         } else {
             ctx.call.respond(HttpStatusCode.InternalServerError)
         }

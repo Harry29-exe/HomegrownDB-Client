@@ -1,29 +1,10 @@
-import {Accessor, Component, createSignal, onMount, Setter, Signal} from "solid-js";
+import {Component, createSignal, onMount} from "solid-js";
 import {Editor} from "./text-editor/Editor";
 import {QueriesTree} from "./queries/QueriesTree";
 import {VerticalDivider} from "../components/VerticalDivider";
 import {QueriesApi, QueryDTO} from "../client/QueriesApi";
-
-class EditorState {
-    constructor(
-        private currentQueryState: Signal<QueryDTO>,
-        private queriesState: Signal<QueryDTO[]>,
-    ) {
-    }
-
-    get queries(): QueryDTO[] {
-        return this.queriesState[0]()
-    }
-
-    get currentQuery(): QueryDTO {
-        return this.currentQueryState[0]()
-    }
-
-    set currentQuery(query: QueryDTO) {
-        this.currentQueryState[1](query)
-    }
-
-}
+import {EditorCtxProvider, useEditorCtx} from "./state/EditorCtx";
+import {WindowPosition, WindowWrapper} from "./windows/WindowWrapper";
 
 export const EditorWindow: Component = () => {
     const [currentQuery, setCurrentQuery] = createSignal(new QueryDTO("", ""));
@@ -39,25 +20,30 @@ export const EditorWindow: Component = () => {
 
     if (isLoading()) return <div>Loading...</div>
 
-    const editorState = new EditorState(
-        [currentQuery, setCurrentQuery],
-        [queries, setQueries]);
-
-    return <EditorView state={editorState}/>
+    return <EditorCtxProvider>
+        <EditorView queries={queries()} currentQuery={currentQuery()} setCurrentQuery={setCurrentQuery}/>
+    </EditorCtxProvider>
 }
 
-const EditorView: Component<{state: EditorState}> = (props) => {
-    const editorState = props.state;
+interface EditorViewProps {
+    queries: QueryDTO[],
+    currentQuery: QueryDTO,
+    setCurrentQuery: (query: QueryDTO) => any
+}
+
+const EditorView: Component<EditorViewProps> = (props) => {
+    const editorConfig = useEditorCtx();
 
     return <div class="w-full h-full relative flex flex-row">
-        <div class="w-1/4 h-full">
-            <QueriesTree queries={editorState.queries} onQuerySelect={query => editorState.currentQuery = query}/>
-        </div>
+        <WindowWrapper position={WindowPosition.LEFT} config={editorConfig.config.queriesWindow}
+                       updateConfig={() => {}}>
+            <QueriesTree queries={props.queries} onQuerySelect={props.setCurrentQuery}/>
+        </WindowWrapper>
 
-        <VerticalDivider/>
+        {/*<VerticalDivider/>*/}
 
         <div class="w-3/4 h-full">
-            <Editor initialContent={editorState.currentQuery.query}/>
+            <Editor initialContent={props.currentQuery.query}/>
         </div>
     </div>
 }
