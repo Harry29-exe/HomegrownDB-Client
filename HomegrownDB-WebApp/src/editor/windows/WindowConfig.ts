@@ -26,4 +26,8 @@ export class WindowConfig {
         ) + ";";
     }
 
+    clone(): WindowConfig {
+        return new WindowConfig(this.width, this.height);
+    }
+
 }

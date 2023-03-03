@@ -4,18 +4,22 @@ import {SyntaxService} from "./syntax/SyntaxService";
 import {TokensView} from "./TokensView";
 import {DBClient} from "../../client/DBClient";
 import {ResultTable} from "../results/ResultTable";
+import {QueryDTO} from "../../client/QueriesApi";
 
 export interface EditorProps {
-    initialContent: string
+    currentQuery: QueryDTO
 }
 
 export const Editor: Component<EditorProps> = (props: EditorProps) => {
     const dbClient = new DBClient();
     const syntaxService = new SyntaxService();
 
-    const [query, setQuery] = createSignal<string>(props.initialContent)
+    const [query, setQuery] = createSignal<string>(props.currentQuery?.query ?? '')
     createEffect(() => {
-        setQuery(props.initialContent);
+        console.log(props.currentQuery)
+        if (props.currentQuery) {
+            setQuery(props.currentQuery.query);
+        }
     })
 
     const tokens = () => syntaxService.tokenize(query());
@@ -35,21 +39,32 @@ export const Editor: Component<EditorProps> = (props: EditorProps) => {
     }
 
     return <>
+        <div class="w-full h-8 bg-slate-700 flex items-center px-2 border-b-2 border-slate-900">
+            <input value={props.currentQuery?.name ?? 'new query'} class="bg-transparent border-none caret-white text-green-500 font-bold
+            focus:border-0 focus:outline-none"/>
+            <button onClick={() => alert("not implemented")}
+                    class="hover:bg-green-600 text-white px-2 py-1 text-base border-x-2 border-slate-900">
+                Save
+            </button>
+
+            <div class="grow h-1 w-1"/>
+
+            <button onclick={executeQuery}
+                    class="hover:bg-green-600 text-white px-2 py-1 text-base border-x-2 border-slate-900">
+                Exec
+            </button>
+        </div>
+
         <div class="w-full h-[300px] relative bg-slate-800 text-white">
             <div class="absolute top-0 left-0 w-full h-full">
                 <TokensView tokens={tokens()}/>
             </div>
             <textarea class="absolute top-0 left-0 w-full h-full bg-transparent text-transparent caret-white"
                       oninput={event => update(event.currentTarget.value)}>
-                {props.initialContent}
+                {query()}
             </textarea>
         </div>
 
-        <div class="w-full h-16 bg-slate-700 flex items-center px-2">
-            <button onclick={executeQuery}
-                    class="rounded-xl bg-green-600 text-white p-2"
-            >Send</button>
-        </div>
 
         <Show when={results().length > 0} keyed>
             <ResultTable Header={tableHeaders()} Rows={tableResults()}/>

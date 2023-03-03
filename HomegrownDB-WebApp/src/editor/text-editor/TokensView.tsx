@@ -28,9 +28,9 @@ const SpaceBreakTokenView: Component<{token: Token}> = props => {
     switch (props.token.value)
     {
         case ' ':
-            return <span> </span>
+            return <span>&nbsp;</span>
         case '\t':
-            return <span>   </span>
+            return <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
         case '\n':
             return <br/>
     }
