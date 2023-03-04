@@ -5,12 +5,15 @@ import com.hgdb.core.queries.dao.QueryDao
 import com.hgdb.core.queries.domain.QueryService
 
 class QueriesModule(
-    configModule: ConfigModule
+    deps: Deps
 ) {
 
-    private val queryDao = QueryDao()
+    val queryService: QueryService;
 
-    val queryService = QueryService(configModule.appDatabase, queryDao)
+    init {
+        val queryDao = QueryDao()
+        queryService = QueryService(deps.configModule.appDatabase, queryDao)
+    }
 
-
+    class Deps(val configModule: ConfigModule)
 }

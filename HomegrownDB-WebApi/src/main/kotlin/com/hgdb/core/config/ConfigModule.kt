@@ -4,14 +4,15 @@ import com.hgdb.core.queries.dao.QueriesTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class ConfigModule(
+data class ConfigModuleProviders(
+    val databaseProvider: () -> Database = { DatabaseProvider.stdDatabase() }
+)
 
+class ConfigModule(
+    providers: ConfigModuleProviders
 ) {
 
-    val appDatabase: Database = createDatabase(
-//        "jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1", "root", "", "org.h2.Driver"
-        "jdbc:postgresql://localhost:5432/postgres", "postgres", "123", "org.postgresql.Driver"
-    )
+    val appDatabase: Database = providers.databaseProvider()
 
     init {
 
