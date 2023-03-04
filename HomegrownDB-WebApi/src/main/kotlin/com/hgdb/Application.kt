@@ -1,47 +1,31 @@
 package com.hgdb
 
+import com.hgdb.api.HttpApiModule
 import com.hgdb.core.CoreModule
+import org.http4k.core.Method
+import org.http4k.core.then
+import org.http4k.filter.AllowAll
+import org.http4k.filter.CorsPolicy
+import org.http4k.filter.OriginPolicy
+import org.http4k.filter.ServerFilters
+import org.http4k.routing.routes
+import org.http4k.server.Jetty
+import org.http4k.server.asServer
 
 fun main() {
-//    val coreModule = CoreModule()
+    val coreModule = CoreModule()
+    val apiModule = HttpApiModule(coreModule)
 
+    val corsFilter = ServerFilters.Cors(CorsPolicy(
+        OriginPolicy.AllowAll(),
+        listOf(),
+        listOf(Method.GET, Method.POST, Method.PUT, Method.DELETE)
+    ))
 
-//    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = createInitAppFun(coreModule))
-//        .start(wait = true)
+    val app = corsFilter.then(routes(
+        apiModule.queriesApi.register()
+    ))
+
+    app.asServer(Jetty(8080))
+        .start()
 }
-
-//fun createInitAppFun(coreModule: CoreModule): Application.() -> Unit {
-//    return fun Application.() {
-//        val startTime = System.currentTimeMillis()
-//
-//        configureCORS()
-//        initAPIs(coreModule)
-//
-//        val now = System.currentTimeMillis()
-//        println("App started in: ${(now - startTime).toDouble() / 1_000}s")
-//    }
-//}
-//
-//fun Application.initAPIs(coreModule: CoreModule) {
-//    routing {
-//        queryRouting(coreModule.queriesModule)
-//    }
-//}
-//
-//fun Application.configureCORS() {
-//    install(CORS) {
-//        allowMethod(HttpMethod.Options)
-//        allowMethod(HttpMethod.Put)
-//        allowMethod(HttpMethod.Delete)
-//        allowMethod(HttpMethod.Patch)
-//        allowHeader(HttpHeaders.Authorization)
-//        allowHeader("MyCustomHeader")
-//        anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
-//    }
-//}
-
-//fun Application.module() {
-//    configureSerialization()
-//    configureDatabases()
-//    configureRouting()
-//}

@@ -5,7 +5,7 @@ import com.hgdb.core.config.ConfigModuleProviders
 import com.hgdb.core.queries.QueriesModule
 
 class CoreModule(
-    configModuleProviders: ConfigModuleProviders
+    configModuleProviders: ConfigModuleProviders = ConfigModuleProviders()
 ) {
     private val configModule: ConfigModule
     val queriesModule: QueriesModule

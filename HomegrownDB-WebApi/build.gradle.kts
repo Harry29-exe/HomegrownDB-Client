@@ -30,6 +30,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("com.h2database:h2:$h2_version")
     implementation("org.postgresql:postgresql:$postgres_version")
+    implementation("org.http4k:http4k-server-jetty:4.40.0.0")
 //    implementation("ch.qos.logback:logback-classic:$logback_version")
 //    implementation("io.ktor:ktor-server-core-jvm:2.2.4")
 //    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.2.4")

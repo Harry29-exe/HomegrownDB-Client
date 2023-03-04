@@ -1,53 +1,49 @@
 package com.hgdb.api
 
-import com.hgdb.core.queries.QueriesModule
 import com.hgdb.core.queries.domain.Query
 import com.hgdb.core.queries.domain.QueryService
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.http4k.core.*
+import org.http4k.lens.ContentNegotiation
+import org.http4k.lens.string
+import org.http4k.routing.RoutingHttpHandler
+import org.http4k.routing.bind
+import org.http4k.routing.routes
 
+interface ApiController {
+    fun register(): RoutingHttpHandler
+}
 
+class QueriesApi(
+    private val queryService: QueryService
+) : ApiController {
 
-//class QueryDTO(name: String, query: String)
+    fun getAll(request: Request): Response {
+        val queries = queryService.readAll()
 
-//fun Route.queryRouting(queryModule: QueriesModule) {
-//    val queriesApi = QueriesApi(queryModule.queryService)
-//
-//    route("/queries") {
-//        get { queriesApi.getAllQueries(this) }
-//
-//        post { queriesApi.createQuery(this) }
-//    }
-//
-//}
-//
-//typealias RequestCtx = PipelineContext<Unit, ApplicationCall>
-//
-//class QueriesApi(
-//    val queryService: QueryService
-//) {
-//
-//    suspend inline fun getAllQueries(ctx: RequestCtx) {
-//        val result = queryService.readAll()
-//        if (result.isSuccess) {
-//            ctx.context.respondText(
-//                Json.encodeToString(result.getOrThrow()),
-//                ContentType.Application.Json,
-//                HttpStatusCode.OK
-//            )
-//        } else {
-//            ctx.call.respond(HttpStatusCode.InternalServerError)
-//        }
-//    }
-//
-//    suspend inline fun createQuery(ctx: RequestCtx) {
-//        val body = ctx.call.receiveText()
-//        val inputQuery = Json.decodeFromString<Query>(body)
-//
-//        val savedQuery = queryService.create(inputQuery)
-//        if (savedQuery.isSuccess) {
-//            ctx.call.respond(HttpStatusCode.OK, savedQuery)
-//        } else {
-//            ctx.call.respond(HttpStatusCode.InternalServerError)
-//        }
-//    }
-//
-//}
+        if (queries.isFailure) {
+            return Response(Status.INTERNAL_SERVER_ERROR)
+        }
+        val result = Json.encodeToString(queries.getOrThrow())
+        return Response( Status.OK).with(
+            Body.string(ContentType.APPLICATION_JSON, null, ContentNegotiation.None).toLens() of result
+        )
+    }
+
+    fun create(request: Request): Response {
+        val query = Json.decodeFromString<Query>(request.bodyString())
+        queryService.create(query)
+
+        return Response(Status.OK)
+    }
+
+    override fun register(): RoutingHttpHandler {
+        return "/queries" bind routes (
+            Method.GET to { request -> this.getAll(request) },
+            Method.POST to { request -> this.create(request) }
+        )
+    }
+
+}
