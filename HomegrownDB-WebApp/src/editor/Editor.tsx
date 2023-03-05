@@ -1,10 +1,9 @@
-import {Component, ComponentProps, createEffect, createSignal, Show} from "solid-js";
-import {Token} from "./syntax/token/Token";
-import {SyntaxService} from "./syntax/SyntaxService";
-import {TokensView} from "./TokensView";
-import {DBClient} from "../../client/DBClient";
-import {ResultTable} from "../results/ResultTable";
-import {QueryDTO} from "../../client/QueriesApi";
+import {Component, createEffect, createSignal, Show} from "solid-js";
+import {SyntaxService} from "./text-editor/syntax/SyntaxService";
+import {TokensView} from "./text-editor/TokensView";
+import {DBClient} from "../client/DBClient";
+import {ResultTable} from "./results/ResultTable";
+import {QueryDTO} from "../client/QueriesApi";
 
 export interface EditorProps {
     currentQuery: QueryDTO

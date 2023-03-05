@@ -1,12 +1,12 @@
 import {Component, createSignal, Show} from "solid-js";
-import {Editor} from "./text-editor/Editor";
+import {Editor} from "./Editor";
 import {QueriesTree} from "./queries/QueriesTree";
-import {EditorCtxProvider, useEditorContext} from "./EditorContext";
-import {WindowPosition, WindowWrapper} from "./windows/WindowWrapper";
+import {EditorStateContextProvider, useEditorStateContext} from "./EditorContext";
+import {WindowPosition, WindowWrapper} from "../components/windows/WindowWrapper";
 import {QueriesContext, useQueriesContext} from "./queries/QueriesContext";
 import {QueriesManagerImpl} from "./queries/QueriesManager";
 
-export const EditorWindow: Component = () => {
+export const EditorPage: Component = () => {
     const [loaded, setLoaded] = createSignal<boolean>(false);
     const queriesManager = new QueriesManagerImpl();
     queriesManager.load().then(result => {
@@ -18,15 +18,15 @@ export const EditorWindow: Component = () => {
 
     return <Show when={loaded()} fallback={<div>Loading...</div>} keyed={false}>
             <QueriesContext queriesManager={queriesManager}>
-                <EditorCtxProvider>
-                    <EditorView/>
-                </EditorCtxProvider>
+                <EditorStateContextProvider>
+                    <EditorPageView/>
+                </EditorStateContextProvider>
             </QueriesContext>
         </Show>
 }
 
-const EditorView: Component = () => {
-    const editorConfig = useEditorContext();
+const EditorPageView: Component = () => {
+    const editorConfig = useEditorStateContext();
     const queriesContext = useQueriesContext();
 
     return <div class="w-full h-full relative flex flex-row">

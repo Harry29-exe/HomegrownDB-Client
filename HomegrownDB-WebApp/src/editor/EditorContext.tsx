@@ -1,22 +1,22 @@
 import { createContext, createSignal, ParentComponent, useContext } from "solid-js";
-import {WindowConfig, WindowConsts} from "./windows/WindowConfig";
+import {WindowConfig, WindowConsts} from "../components/windows/WindowConfig";
 
-const EditorContext = createContext<EditorContext>({} as EditorContext)
+const EditorContext = createContext<EditorState>({} as EditorState)
 
-export const useEditorContext = () => useContext<EditorContext>(EditorContext);
+export const useEditorStateContext = () => useContext<EditorState>(EditorContext);
 
-interface EditorCtxProps {
+interface EditorStateContextProviderProps {
     queriesWindow?: WindowConfig,
     schemaWindow?: WindowConfig
 }
 
-export const EditorCtxProvider: ParentComponent<EditorCtxProps> = props => {
+export const EditorStateContextProvider: ParentComponent<EditorStateContextProviderProps> = props => {
     return <EditorContext.Provider value={new EditorContextImpl(props.queriesWindow, props.schemaWindow)}>
         {props.children}
     </EditorContext.Provider>
 }
 
-interface EditorContext {
+interface EditorState {
     set queriesWindowConfig(windowConfig: WindowConfig);
     get queriesWindowConfig(): WindowConfig
     set schemaWindowConfig(windowConfig: WindowConfig);
@@ -25,7 +25,7 @@ interface EditorContext {
     get textEditorWith(): number
 }
 
-class EditorContextImpl implements EditorContext {
+class EditorContextImpl implements EditorState {
     private _queriesWindowConfig = createSignal<WindowConfig>(new WindowConfig(200, WindowConsts.FULL))
     private _schemaWindowConfig = createSignal<WindowConfig>(new WindowConfig(150, WindowConsts.FULL));
 

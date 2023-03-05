@@ -9,7 +9,7 @@ export interface QueriesTreeProps {
 export const QueriesTree: Component<QueriesTreeProps> = props => {
     return <ul>
         <li class="pr-2 py-1.5 hover:bg-slate-600 hover:cursor-pointer hover:text-cyan-300 italic border-b-2"
-            onclick={props.onQuerySelect(new QueryDTO(undefined, "", ""))}>
+            onclick={() => props.onQuerySelect(new QueryDTO(undefined, "", ""))}>
             New Query
         </li>
         <For each={props.queries}>{(query) =>

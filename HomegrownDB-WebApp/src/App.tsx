@@ -2,13 +2,13 @@ import type { Component } from 'solid-js';
 
 import logo from './logo.svg';
 import styles from './App.module.css';
-import {Editor} from "./editor/text-editor/Editor";
-import {EditorWindow} from "./editor/EditorWindow";
+import {Editor} from "./editor/Editor";
+import {EditorPage} from "./editor/EditorPage";
 
 const App: Component = () => {
     return (
         <div class="w-[100vw] h-[100vh] bg-slate-800 text-white">
-            <EditorWindow/>
+            <EditorPage/>
         </div>
     // <div class={styles.App}>
     //   <header class={styles.header}>
