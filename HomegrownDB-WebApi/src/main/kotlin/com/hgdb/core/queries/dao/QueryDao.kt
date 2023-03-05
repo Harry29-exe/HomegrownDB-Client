@@ -1,8 +1,9 @@
 package com.hgdb.core.queries.dao
 
-import com.hgdb.lib.dao.*
 import com.hgdb.core.queries.domain.Query
-import org.jetbrains.exposed.sql.*
+import com.hgdb.lib.dao.*
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.statements.InsertStatement
 
 class QueryDao : CRUDDao<Query, Long>, ReadAllDao<Query> {
@@ -32,6 +33,7 @@ private class QueryTableMapper : TableRowMapper<QueriesTable, Query, Long> {
     override fun fromRow(row: ResultRow): Query {
         return Query(
             row[QueriesTable.id].value,
+            row[QueriesTable.uuid],
             row[QueriesTable.name],
             row[QueriesTable.query]
         )
@@ -39,6 +41,7 @@ private class QueryTableMapper : TableRowMapper<QueriesTable, Query, Long> {
 
     override fun fromDomain(stmt: InsertStatement<Number>, domain: Query) {
         stmt[QueriesTable.id] = domain.id
+        stmt[QueriesTable.uuid] = domain.uuid
         stmt[QueriesTable.name] = domain.name
         stmt[QueriesTable.query] = domain.query
     }

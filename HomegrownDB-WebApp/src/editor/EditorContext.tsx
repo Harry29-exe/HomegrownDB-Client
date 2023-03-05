@@ -1,4 +1,4 @@
-import { Component, Context, createContext, createSignal, ParentComponent, useContext } from "solid-js";
+import { createContext, createSignal, ParentComponent, useContext } from "solid-js";
 import {WindowConfig, WindowConsts} from "./windows/WindowConfig";
 
 const EditorContext = createContext<EditorContext>({} as EditorContext)

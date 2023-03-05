@@ -1,48 +1,44 @@
-import {Component, createSignal, onMount} from "solid-js";
+import {Component, createSignal, Show} from "solid-js";
 import {Editor} from "./text-editor/Editor";
 import {QueriesTree} from "./queries/QueriesTree";
-import {QueriesApi, QueryDTO} from "../client/QueriesApi";
 import {EditorCtxProvider, useEditorContext} from "./EditorContext";
 import {WindowPosition, WindowWrapper} from "./windows/WindowWrapper";
+import {QueriesContext, useQueriesContext} from "./queries/QueriesContext";
+import {QueriesManagerImpl} from "./queries/QueriesManager";
 
 export const EditorWindow: Component = () => {
-    const [currentQuery, setCurrentQuery] = createSignal(new QueryDTO("", ""));
-    const [isLoading, setLoading] = createSignal<boolean>(false);
-    const [queries, setQueries] = createSignal<QueryDTO[]>([])
+    const [loaded, setLoaded] = createSignal<boolean>(false);
+    const queriesManager = new QueriesManagerImpl();
+    queriesManager.load().then(result => {
+        if (result instanceof Error) {
+            throw result;
+        }
+        setLoaded(true);
+    })
 
-    const queriesApi = new QueriesApi()
-    onMount(async () => {
-        const queries = await queriesApi.getAllQueries();
-        setLoading(false);
-        setQueries(queries)
-    });
-
-    if (isLoading()) return <div>Loading...</div>
-
-    return <EditorCtxProvider>
-        <EditorView queries={queries()} currentQuery={currentQuery()} setCurrentQuery={setCurrentQuery}/>
-    </EditorCtxProvider>
+    return <Show when={loaded()} fallback={<div>Loading...</div>} keyed={false}>
+            <QueriesContext queriesManager={queriesManager}>
+                <EditorCtxProvider>
+                    <EditorView/>
+                </EditorCtxProvider>
+            </QueriesContext>
+        </Show>
 }
 
-interface EditorViewProps {
-    queries: QueryDTO[],
-    currentQuery: QueryDTO,
-    setCurrentQuery: (query: QueryDTO) => any
-}
-
-const EditorView: Component<EditorViewProps> = (props) => {
+const EditorView: Component = () => {
     const editorConfig = useEditorContext();
+    const queriesContext = useQueriesContext();
 
     return <div class="w-full h-full relative flex flex-row">
         <WindowWrapper position={WindowPosition.LEFT} config={editorConfig.queriesWindowConfig}
                        updateConfig={config => editorConfig.queriesWindowConfig = config}>
-            <QueriesTree queries={props.queries} onQuerySelect={props.setCurrentQuery}/>
+            <QueriesTree queries={queriesContext.queries} onQuerySelect={query => queriesContext.setCurrentQuery(query)}/>
         </WindowWrapper>
 
         <div class={`absolute`} style={
             `left: ${editorConfig.textEditorLeftOffset}px;
              width: ${editorConfig.textEditorWith}px;`}>
-            <Editor currentQuery={props.currentQuery}/>
+            <Editor currentQuery={queriesContext.currentQuery}/>
         </div>
 
         <WindowWrapper position={WindowPosition.RIGHT} config={editorConfig.schemaWindowConfig}

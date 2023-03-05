@@ -16,7 +16,6 @@ export const Editor: Component<EditorProps> = (props: EditorProps) => {
 
     const [query, setQuery] = createSignal<string>(props.currentQuery?.query ?? '')
     createEffect(() => {
-        console.log(props.currentQuery)
         if (props.currentQuery) {
             setQuery(props.currentQuery.query);
         }

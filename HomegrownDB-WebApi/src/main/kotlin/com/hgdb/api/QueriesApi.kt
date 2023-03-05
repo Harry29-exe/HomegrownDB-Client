@@ -1,20 +1,14 @@
 package com.hgdb.api
 
-import com.hgdb.core.queries.domain.Query
 import com.hgdb.core.queries.domain.QueryService
+import com.hgdb.lib.api.ApiController
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.*
-import org.http4k.lens.ContentNegotiation
-import org.http4k.lens.string
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.routes
-
-interface ApiController {
-    fun register(): RoutingHttpHandler
-}
 
 class QueriesApi(
     private val queryService: QueryService
@@ -26,17 +20,25 @@ class QueriesApi(
         if (queries.isFailure) {
             return Response(Status.INTERNAL_SERVER_ERROR)
         }
-        val result = Json.encodeToString(queries.getOrThrow())
+
+        val queriesDTO = queries.getOrThrow().map(QueryDTO::fromQuery)
+        val result = Json.encodeToString(queriesDTO)
         return Response( Status.OK).with(
-            Body.string(ContentType.APPLICATION_JSON, null, ContentNegotiation.None).toLens() of result
+            HttpAPI.JsonLens of result
         )
     }
 
     fun create(request: Request): Response {
-        val query = Json.decodeFromString<Query>(request.bodyString())
-        queryService.create(query)
-
-        return Response(Status.OK)
+        val requestQuery = Json.decodeFromString<QueryDTO>(request.bodyString())
+        val result = queryService.create(requestQuery.toDomain())
+        if (result.isFailure) {
+            return Response(Status.INTERNAL_SERVER_ERROR)
+        }
+        val createdQuery = result.getOrThrow()
+        val responseBody = Json.encodeToString(QueryDTO.fromQuery(createdQuery))
+        return Response(Status.OK).with(
+            HttpAPI.JsonLens of responseBody
+        )
     }
 
     override fun register(): RoutingHttpHandler {
