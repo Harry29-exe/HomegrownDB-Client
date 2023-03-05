@@ -18,7 +18,7 @@ fun main() {
 
     val corsFilter = ServerFilters.Cors(CorsPolicy(
         OriginPolicy.AllowAll(),
-        listOf(),
+        listOf("Content-Type"),
         listOf(Method.GET, Method.POST, Method.PUT, Method.DELETE)
     ))
 

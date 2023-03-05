@@ -38,7 +38,7 @@ class QueriesApi(
         val responseBody = Json.encodeToString(QueryDTO.fromQuery(createdQuery))
         return Response(Status.OK).with(
             HttpAPI.JsonLens of responseBody
-        )
+        ).header("access-control-allow-origin", "*")
     }
 
     override fun register(): RoutingHttpHandler {

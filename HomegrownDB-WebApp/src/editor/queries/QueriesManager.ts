@@ -48,7 +48,6 @@ export class QueriesManagerImpl implements QueriesManager {
     }
 
     setCurrentQuery(query: QueryDTO): void {
-        console.log(this.currentQueryState)
         this.currentQueryState[1](query)
     }
 

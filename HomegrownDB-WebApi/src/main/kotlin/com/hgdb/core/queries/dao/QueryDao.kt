@@ -2,6 +2,7 @@ package com.hgdb.core.queries.dao
 
 import com.hgdb.core.queries.domain.Query
 import com.hgdb.lib.dao.*
+import com.hgdb.lib.domain.Domain
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.statements.InsertStatement
@@ -40,7 +41,9 @@ private class QueryTableMapper : TableRowMapper<QueriesTable, Query, Long> {
     }
 
     override fun fromDomain(stmt: InsertStatement<Number>, domain: Query) {
-        stmt[QueriesTable.id] = domain.id
+        if (domain.id != Domain.INVALID_ID) {
+            stmt[QueriesTable.id] = domain.id
+        }
         stmt[QueriesTable.uuid] = domain.uuid
         stmt[QueriesTable.name] = domain.name
         stmt[QueriesTable.query] = domain.query

@@ -38,7 +38,7 @@ const EditorPageView: Component = () => {
         <div class={`absolute`} style={
             `left: ${editorConfig.textEditorLeftOffset}px;
              width: ${editorConfig.textEditorWith}px;`}>
-            <Editor currentQuery={queriesContext.currentQuery}/>
+            <Editor/>
         </div>
 
         <WindowWrapper position={WindowPosition.RIGHT} config={editorConfig.schemaWindowConfig}
